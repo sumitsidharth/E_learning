@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduverse | Neumorphic Learning Platform</title>
+    
+    <!-- Typography: Plus Jakarta Sans (Display) & DM Sans (Body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS (Core Layout) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Design System: Neumorphism (Soft UI) -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+<body class="bg-neumorph d-flex flex-column min-vh-100">
+    <!-- Background Decorations (Floating depth) -->
+    <div class="position-fixed top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: -1; pointer-events: none;">
+        <div class="floating-circle circle-extruded" style="width: 400px; height: 400px; top: -150px; right: -100px; opacity: 0.5;"></div>
+        <div class="floating-circle circle-inset" style="width: 250px; height: 250px; bottom: 100px; left: -80px; opacity: 0.4; animation-delay: 2s;"></div>
+    </div>
+
+    <!-- Navigation: Soft Sticky Panel -->
+    <nav class="navbar navbar-expand-lg header-neumorph py-3 shadow-none">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'Eduverse:home' %}">
+                <div class="icon-well me-3" style="width: 40px; height: 40px; margin-bottom: 0; box-shadow: var(--shadow-inset-sm);">
+                    <i class="bi bi-intersect fs-5" style="color: var(--accent-neumorph);"></i>
+                </div>
+                <span class="fs-4 fw-black font-display tracking-tighter" style="color: var(--fg-neumorph);">EDUVERSE</span>
+            </a>
+            
+            <button class="navbar-toggler btn-neumorph border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" style="box-shadow: var(--shadow-extruded-sm);">
+                <i class="bi bi-list fs-3" style="color: var(--fg-neumorph);"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Search Bar: Recessed Well -->
+                <form class="d-flex mx-auto w-100 px-lg-5 mb-3 mb-lg-0" action="{% url 'Eduverse:notes_list' %}" method="get" style="max-width: 550px;">
+                    <div class="position-relative w-100">
+                        <input class="input-neumorph ps-5" type="search" name="q" placeholder="Search resources..." aria-label="Search" style="box-shadow: var(--shadow-inset-sm);">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                    </div>
+                </form>
+
+                <ul class="navbar-nav align-items-center gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold px-3 py-2 btn-neumorph border-0" style="box-shadow: none; font-size: 0.9rem;" href="{% url 'Eduverse:notes_list' %}">EXPLORE</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn-neumorph py-2 px-3 d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" style="box-shadow: var(--shadow-extruded-sm);">
+                                <i class="bi bi-person-circle me-2" style="color: var(--accent-neumorph);"></i>
+                                <span class="fw-bold">{{ user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 card-neumorph mt-3 p-2" style="box-shadow: var(--shadow-extruded-hover); background: var(--bg-neumorph);">
+                                {% if user.is_admin %}
+                                    <li><a class="dropdown-item py-2 px-3 fw-bold rounded-2 hover-bg-light" href="{% url 'Eduverse:admin_dashboard' %}">Analytics</a></li>
+                                {% elif user.is_teacher %}
+                                    <li><a class="dropdown-item py-2 px-3 fw-bold rounded-2 hover-bg-light" href="{% url 'Eduverse:teacher_dashboard' %}">Dashboard</a></li>
+                                    <li><a class="dropdown-item py-2 px-3 fw-bold rounded-2 hover-bg-light" href="{% url 'Eduverse:note_create' %}">Upload Log</a></li>
+                                {% elif user.is_student %}
+                                    <li><a class="dropdown-item py-2 px-3 fw-bold rounded-2 hover-bg-light" href="{% url 'Eduverse:student_dashboard' %}">Dashboard</a></li>
+                                    <li><a class="dropdown-item py-2 px-3 fw-bold rounded-2 hover-bg-light" href="{% url 'payments:purchase_history' %}">My Orders</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider opacity-10"></li>
+                                <li>
+                                    <form action="{% url 'Eduverse:logout' %}" method="post" class="m-0">
+                                        {% csrf_token %}
+                                        <button class="dropdown-item py-2 px-3 fw-bold text-danger rounded-2" type="submit">Logout Sequence</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{% url 'Eduverse:login' %}" class="nav-link fw-bold px-3 py-2" style="color: var(--fg-neumorph); font-size: 0.9rem;">LOGIN</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'Eduverse:register' %}" class="btn-neumorph btn-neumorph-accent py-2 px-4">JOIN_FREE</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Flow -->
+    <main class="flex-grow-1">
+        <div class="container py-5">
+            {% if messages %}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            <div class="card-neumorph p-3 mb-3 border-0 d-flex flex-row align-items-center justify-content-between" style="box-shadow: var(--shadow-extruded-sm);">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-info-circle-fill me-3" style="color: var(--accent-neumorph);"></i>
+                                    <span class="fw-bold">{{ message }}</span>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer: Soft Panel -->
+    <footer class="py-5 mt-auto border-top border-white border-opacity-10">
+        <div class="container">
+            <div class="card-neumorph p-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 mb-4 mb-lg-0 text-center text-lg-start">
+                        <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-3">
+                            <i class="bi bi-intersect fs-3 me-2" style="color: var(--accent-neumorph);"></i>
+                            <h4 class="fw-black mb-0 font-display">EDUVERSE</h4>
+                        </div>
+                        <p class="text-muted-neumorph mb-0 fw-medium">Tactile learning engineered for the modern academic landscape. Every word, every module, designed for clarity.</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="d-flex justify-content-center justify-content-lg-end gap-4 p-2">
+                            <a href="#" class="btn-neumorph p-3" style="border-radius: 999px;"><i class="bi bi-twitter fs-5"></i></a>
+                            <a href="#" class="btn-neumorph p-3" style="border-radius: 999px;"><i class="bi bi-github fs-5"></i></a>
+                            <a href="#" class="btn-neumorph p-3" style="border-radius: 999px;"><i class="bi bi-discord fs-5"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 pt-4 border-top border-dark border-opacity-10">
+                    <div class="col text-center">
+                        <p class="mb-0 text-muted-neumorph small fw-bold">&copy; 2026 EDUVERSE FOUNDATION. HIGH-FIDELITY LEARNING MODULES.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Common JS -->
+    <script src="{% static 'js/stripe.js' %}"></script>
+</body>
+</html>

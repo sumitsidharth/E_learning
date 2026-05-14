@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="bauhaus-card text-center p-5 position-relative overflow-hidden">
+            <!-- Decorative Shapes -->
+            <div class="bauhaus-shape bg-bauhaus-red opacity-25" style="width: 200px; height: 40px; top: 20px; left: -50px; transform: rotate(-45deg);"></div>
+            <div class="bauhaus-shape bg-bauhaus-black opacity-10" style="width: 100px; height: 100px; border-radius: 50%; bottom: -30px; right: -30px;"></div>
+            
+            <div class="position-relative z-1">
+                <div class="icon-box-bauhaus bg-bauhaus-yellow text-dark mx-auto mb-4 border-dark" style="width: 100px; height: 100px; font-size: 3rem;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                
+                <h1 class="text-uppercase fw-black mb-3 text-bauhaus-red">Checkout Aborted</h1>
+                <p class="lead fw-bold mb-4">Your payment session has been cancelled. You have not been charged for this transaction.</p>
+                
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mt-4">
+                    {% if note %}
+                        <a href="{% url 'Eduverse:note_detail' note.id %}" class="btn-bauhaus btn-bauhaus-blue rounded-0 text-decoration-none">
+                            <i class="bi bi-arrow-counterclockwise"></i> Retry Purchase
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'Eduverse:notes_list' %}" class="btn-bauhaus btn-bauhaus-white rounded-0 text-decoration-none">
+                        <i class="bi bi-search"></i> Browse Other Notes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

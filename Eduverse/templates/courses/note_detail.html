@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-10 col-xl-8">
+        <!-- Breadcrumb Navigation: Soft Pillowed -->
+        <nav aria-label="breadcrumb" class="mb-5">
+            <ol class="breadcrumb card-neumorph px-4 py-2 d-inline-flex" style="box-shadow: var(--shadow-inset-sm); border-radius: 12px; list-style: none;">
+                <li class="breadcrumb-item"><a href="{% url 'Eduverse:notes_list' %}" class="text-accent text-decoration-none fw-bold small">CATALOG</a></li>
+                <li class="breadcrumb-item active fw-bold small text-muted-neumorph ms-2" aria-current="page" style="opacity: 0.6;">{{ note.title|upper }}</li>
+            </ol>
+        </nav>
+
+        <div class="card-neumorph p-4 p-md-5" style="box-shadow: var(--shadow-extruded-sm); border-radius: 32px;">
+            
+            <div class="row g-5">
+                <!-- Left: Visual Identity -->
+                <div class="col-md-5">
+                    <div class="card-neumorph p-2 mb-4" style="box-shadow: var(--shadow-inset-sm); border-radius: 20px; background: var(--bg-neumorph);">
+                        <div class="rounded-4 overflow-hidden" style="height: 350px; position: relative;">
+                            {% if note.preview_image %}
+                                <img src="{{ note.preview_image.url }}" class="w-100 h-100 object-fit-cover opacity-90" alt="{{ note.title }}">
+                            {% else %}
+                                <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-white bg-opacity-10">
+                                    <i class="bi bi-file-earmark-pdf fs-1 opacity-20 mb-3"></i>
+                                    <p class="small fw-bold text-muted-neumorph mb-0">PREVIEW_GEN_RESTRICTED</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Core Intelligence -->
+                <div class="col-md-7">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div class="icon-well sm" style="width: 45px; height: 45px; margin-bottom: 0; box-shadow: var(--shadow-inset-sm);">
+                            <i class="bi bi-mortarboard-fill" style="color: var(--accent-neumorph);"></i>
+                        </div>
+                        <div class="card-neumorph px-4 py-2" style="box-shadow: var(--shadow-inset-sm); border-radius: 12px;">
+                            <span class="fw-black fs-4 text-dark">
+                                {% if note.is_free %}FREE_ACCESS{% else %}₹{{ note.price }}{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <h1 class="display-6 fw-black font-display tracking-tighter mb-3" style="color: var(--fg-neumorph);">{{ note.title|upper }}</h1>
+                    <p class="text-accent fw-bold small mb-4 tracking-widest">{{ note.subject.name|upper }} // ACADEMIC_PACKET</p>
+
+                    <div class="card-neumorph p-4 mb-5" style="box-shadow: var(--shadow-inset-sm); border-radius: 16px; background: rgba(255,255,255,0.05);">
+                        <p class="text-muted-neumorph fw-medium mb-0" style="line-height: 1.6;">{{ note.description|linebreaks }}</p>
+                    </div>
+
+                    <div class="row g-3 mb-5">
+                        <div class="col-sm-6">
+                            <div class="card-neumorph p-3 d-flex align-items-center" style="box-shadow: var(--shadow-extruded-sm); border-radius: 12px;">
+                                <div class="icon-well sm me-2" style="width: 35px; height: 35px;">
+                                    <i class="bi bi-person-fill small"></i>
+                                </div>
+                                <div>
+                                    <p class="small fw-bold text-muted-neumorph mb-0" style="font-size: 0.6rem;">AUTHOR_ID</p>
+                                    <span class="small fw-bold text-dark">{{ note.teacher.username|default:note.teacher.email|upper }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card-neumorph p-3 d-flex align-items-center" style="box-shadow: var(--shadow-extruded-sm); border-radius: 12px;">
+                                <div class="icon-well sm me-2" style="width: 35px; height: 35px;">
+                                    <i class="bi bi-calendar-check small"></i>
+                                </div>
+                                <div>
+                                    <p class="small fw-bold text-muted-neumorph mb-0" style="font-size: 0.6rem;">DEPLOY_DATE</p>
+                                    <span class="small fw-bold text-dark">{{ note.created_at|date:"M d, Y"|upper }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid shadow-lg rounded-4">
+                        {% if note.is_free or has_purchased %}
+                            <a href="{% url 'Eduverse:note_download' note.id %}" class="btn-neumorph btn-neumorph-accent py-3 fs-5 fw-black font-display">
+                                <i class="bi bi-download me-2"></i> DOWNLOAD_PACKET
+                            </a>
+                        {% else %}
+                            <button class="btn-neumorph btn-neumorph-accent py-3 fs-5 fw-black font-display js-stripe-checkout" 
+                                    data-url="{% url 'payments:create_checkout_session' %}" 
+                                    data-note-id="{{ note.id }}" 
+                                    data-csrf="{{ csrf_token }}">
+                                <i class="bi bi-cart-fill me-2"></i> INITIALIZE_ACQUISITION
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

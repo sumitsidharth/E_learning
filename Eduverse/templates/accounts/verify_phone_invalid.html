@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-8 col-lg-6 text-center">
+        <div class="bauhaus-card p-5 bg-white position-relative border-danger border-top">
+            <!-- Decorative Elements -->
+            <div class="bauhaus-shape shape-circle bg-danger opacity-50" style="width: 80px; height: 80px; top: -20px; right: -20px; z-index: -1;"></div>
+            
+            <div class="mb-4 mt-2">
+                <i class="bi bi-x-circle-fill text-danger" style="font-size: 5rem;"></i>
+            </div>
+            
+            <h2 class="text-bauhaus-display fw-black mb-4 border-bottom border-4 border-danger pb-3 d-inline-block">VERIFICATION FAILED</h2>
+            <p class="fs-5 fw-bold text-dark text-opacity-75 mb-4">
+                {{ message|default:"THE VERIFICATION LINK IS INVALID." }}
+            </p>
+            <p class="text-muted mb-5">
+                Tokens expire after 15 minutes. If your token expired or you didn't receive an SMS, please log in and request a new link, or try registering again.
+            </p>
+            
+            <div class="d-grid mt-4 mx-auto" style="max-width: 300px;">
+                <a href="{% url 'Eduverse:login' %}" class="btn-bauhaus btn-bauhaus-blue px-4 py-3">BACK TO LOGIN</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

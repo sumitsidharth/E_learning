@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="bauhaus-card text-center p-5 position-relative overflow-hidden">
+            <!-- Decorative Shapes -->
+            <div class="bauhaus-shape shape-circle bg-bauhaus-yellow opacity-50" style="width: 150px; height: 150px; top: -50px; right: -50px;"></div>
+            <div class="bauhaus-shape shape-triangle bg-bauhaus-blue opacity-50" style="width: 100px; height: 100px; bottom: -20px; left: -20px; transform: rotate(45deg);"></div>
+            
+            <div class="position-relative z-1">
+                <div class="icon-box-bauhaus rounded-circle bg-bauhaus-black text-white mx-auto mb-4" style="width: 100px; height: 100px; font-size: 3rem;">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                
+                <h1 class="text-uppercase fw-black mb-3">Payment Successful</h1>
+                <div class="mb-4">
+                    <span class="badge bg-bauhaus-red text-white py-2 px-3 rounded-0 border border-2 border-dark text-uppercase fw-bold fs-6">
+                        Verified Purchase
+                    </span>
+                </div>
+                
+                <div class="bg-light border border-2 border-dark p-4 text-start mb-4 mx-auto" style="max-width: 400px;">
+                    <div class="d-flex justify-content-between border-bottom border-dark pb-2 mb-2">
+                        <span class="text-uppercase fw-bold small text-muted">Item</span>
+                        <span class="fw-bold">{{ payment.note.title }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom border-dark pb-2 mb-2">
+                        <span class="text-uppercase fw-bold small text-muted">Amount Paid</span>
+                        <span class="fw-bold">₹{{ payment.amount }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between pb-2 mb-2">
+                        <span class="text-uppercase fw-bold small text-muted">Transaction ID</span>
+                        <span class="small text-truncate" style="max-width: 150px;">{{ payment.stripe_session_id }}</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mt-4">
+                    <a href="{% url 'Eduverse:note_download' payment.note.id %}" class="btn-bauhaus btn-bauhaus-red rounded-0 text-decoration-none">
+                        <i class="bi bi-download"></i> Download Note
+                    </a>
+                    <a href="{% url 'payments:purchase_history' %}" class="btn-bauhaus btn-bauhaus-white rounded-0 text-decoration-none">
+                        <i class="bi bi-clock-history"></i> Purchase History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

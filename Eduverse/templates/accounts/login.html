@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-6 col-xl-5">
+        <!-- Main Login Card -->
+        <div class="card-neumorph p-4 p-md-5">
+            <div class="text-center mb-5">
+                <div class="icon-well mx-auto mb-4" style="width: 80px; height: 80px; border-radius: 20px; box-shadow: var(--shadow-inset-sm);">
+                    <i class="bi bi-shield-lock-fill fs-2" style="color: var(--accent-neumorph);"></i>
+                </div>
+                <h2 class="display-5 fw-extrabold font-display tracking-tighter mb-2" style="color: var(--fg-neumorph);">SYSTEM_ACCESS</h2>
+                <p class="text-muted-neumorph fw-bold" style="font-size: 0.85rem;">INITIALIZE_SECURE_LOGIN</p>
+            </div>
+
+            <form method="post" action="{% url 'Eduverse:login' %}" class="needs-validation" novalidate id="login-form">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="card-neumorph p-3 mb-4 bg-danger bg-opacity-10 border-0" style="box-shadow: var(--shadow-inset-sm);">
+                        {% for error in form.non_field_errors %}
+                            <p class="text-danger fw-bold small mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <!-- Email/Username -->
+                    <div class="col-12 text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">USER_IDENTIFIER</label>
+                        <div class="position-relative">
+                            <input type="text" name="username" id="id_username" class="input-neumorph ps-5" placeholder="Username or Email" required>
+                            <i class="bi bi-person-fill position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="ms-2 mt-1 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ form.username.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-12 text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-bold text-muted-neumorph ms-2 small">SECURITY_KEY</label>
+                            <a href="{% url 'Eduverse:password_reset' %}" class="small fw-bold text-accent text-decoration-none" style="font-size: 0.75rem;">RECOVER_PHRASE?</a>
+                        </div>
+                        <div class="position-relative">
+                            <input type="password" name="password" id="id_password" class="input-neumorph ps-5" placeholder="••••••••" required>
+                            <i class="bi bi-key-fill position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="ms-2 mt-1 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ form.password.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Remember Me or Options -->
+                    <div class="col-12 d-flex align-items-center justify-content-between mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe" style="box-shadow: var(--shadow-inset-sm);">
+                            <label class="form-check-label small fw-bold text-muted-neumorph ms-2" for="rememberMe">REMEMBER_IDENTITY</label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Action -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn-neumorph btn-neumorph-accent w-100 py-3 fs-5 font-display fw-bold">
+                            ACCESS_RESOURCES <i class="bi bi-box-arrow-in-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <p class="text-muted-neumorph fw-bold small">FIRST_TIME_ENTRY?</p>
+                    <a href="{% url 'Eduverse:register' %}" class="btn-neumorph py-2 px-4 shadow-sm" style="font-size: 0.85rem;">
+                        CREATE_CREENTIALS
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Form Validation Logic
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

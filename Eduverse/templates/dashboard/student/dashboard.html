@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row mb-5 align-items-center">
+    <div class="col-md-8">
+        <h2 class="display-6 fw-black font-display tracking-tighter mb-1" style="color: var(--fg-neumorph);">STUDENT_DASHBOARD</h2>
+        <p class="text-muted-neumorph fw-bold">WELCOME_BACK, {{ request.user.username|upper }}</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{% url 'Eduverse:notes_list' %}" class="btn-neumorph px-4 py-2">
+            <i class="bi bi-search me-2"></i> BROWSE_CATALOG
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="icon-well sm me-3" style="width: 45px; height: 45px; margin-bottom: 0; box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-bag-check-fill" style="color: var(--accent-neumorph);"></i>
+            </div>
+            <h4 class="fw-bold font-display mb-0">MY_PURCHASED_RESOURCES</h4>
+        </div>
+        
+        {% regroup purchases by purchased_at.date as date_list %}
+        
+        {% if date_list %}
+            <div class="row g-4">
+                {% for purchase_group in date_list %}
+                <div class="col-12">
+                    <div class="card-neumorph p-4" style="border-radius: 24px; box-shadow: var(--shadow-extruded-sm);">
+                        <div class="d-flex align-items-center mb-4 border-bottom border-white border-opacity-10 pb-3">
+                            <span class="badge btn-neumorph border-0 shadow-none px-3 py-2 bg-white text-accent me-3" style="background: var(--bg-neumorph) !important; box-shadow: var(--shadow-inset-sm) !important;">
+                                {{ purchase_group.grouper|date:"M d, Y"|upper }}
+                            </span>
+                            <span class="small fw-bold text-muted-neumorph">ACQUISITION_BATCH</span>
+                        </div>
+                        
+                        <div class="row g-4">
+                            {% for purchase in purchase_group.list %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card-neumorph p-4 h-100" style="box-shadow: var(--shadow-inset-sm); border-radius: 20px;">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="icon-well sm" style="width: 40px; height: 40px; margin-bottom: 0;">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                        <span class="fw-black text-accent">₹{{ purchase.amount_paid }}</span>
+                                    </div>
+                                    <h5 class="fw-bold mb-2 font-display">
+                                        <a href="{% url 'Eduverse:note_detail' purchase.note.id %}" class="text-dark text-decoration-none hover-accent">{{ purchase.note.title }}</a>
+                                    </h5>
+                                    <p class="small text-muted-neumorph mb-4 fw-medium">By {{ purchase.note.teacher.username }}</p>
+                                    
+                                    <div class="d-grid">
+                                        <a href="{% url 'Eduverse:note_download' purchase.note.id %}" class="btn-neumorph btn-neumorph-accent py-2 text-center" style="font-size: 0.85rem;">
+                                            <i class="bi bi-download me-2"></i> DOWNLOAD_RESOURCE
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-neumorph p-5 text-center">
+                <div class="icon-well mx-auto mb-4" style="width: 80px; height: 80px; opacity: 0.3;">
+                    <i class="bi bi-archive-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-muted-neumorph mb-4">NO_PURCHASE_HISTORY_DETECTED</h5>
+                <a href="{% url 'Eduverse:notes_list' %}" class="btn-neumorph btn-neumorph-accent px-5 py-3">
+                    INITIALIZE_FIRST_ACQUISITION
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

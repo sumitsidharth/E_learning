@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-8 shadow-lg rounded-5">
+        <!-- Main Upload Card -->
+        <div class="card-neumorph p-4 p-md-5">
+            <div class="text-center mb-5">
+                <div class="icon-well mx-auto mb-4" style="width: 80px; height: 80px; border-radius: 20px; box-shadow: var(--shadow-inset-sm);">
+                    <i class="bi bi-file-earmark-plus-fill fs-2" style="color: var(--accent-neumorph);"></i>
+                </div>
+                <h2 class="display-5 fw-black font-display tracking-tighter mb-2" style="color: var(--fg-neumorph);">
+                    {% if object %}SYNCHRONIZE_RESOURCE{% else %}DEPLOY_NEW_RESOURCE{% endif %}
+                </h2>
+                <p class="text-muted-neumorph fw-bold" style="font-size: 0.85rem;">INITIALIZE_ACADEMIC_PACKET_SEQUENCE</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate id="upload-form">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="card-neumorph p-3 mb-4 bg-danger bg-opacity-10 border-0" style="box-shadow: var(--shadow-inset-sm);">
+                        {% for error in form.non_field_errors %}
+                            <p class="text-danger fw-bold small mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <!-- Manual Field Rendering for Neumorphic Look -->
+                    {% for field in form %}
+                    <div class="col-{% if field.name == 'title' or field.name == 'description' %}12{% else %}6{% endif %} text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">{{ field.label|upper }}</label>
+                        <div class="position-relative">
+                            {% if field.field.widget.input_type == 'select' %}
+                                <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="input-neumorph" {% if field.field.required %}required{% endif %}>
+                                    {% for choice in field.field.choices %}
+                                        <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>{{ choice.1|upper }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% elif field.field.widget.input_type == 'file' %}
+                                <div class="card-neumorph p-3" style="box-shadow: var(--shadow-inset-sm); border-radius: 12px;">
+                                    <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control bg-transparent border-0 text-muted-neumorph small" {% if field.field.required and not object %}required{% endif %}>
+                                </div>
+                            {% elif field.name == 'description' %}
+                                <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="input-neumorph" style="height: 120px;" placeholder="Provide technical specifications..." {% if field.field.required %}required{% endif %}>{{ field.value|default:'' }}</textarea>
+                            {% else %}
+                                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" class="input-neumorph" placeholder="{{ field.label|upper }}..." {% if field.field.required %}required{% endif %}>
+                            {% endif %}
+                        </div>
+                        {% if field.errors %}
+                            <div class="ms-2 mt-1 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ field.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <!-- Submit Action -->
+                    <div class="col-12 mt-5">
+                        <button type="submit" class="btn-neumorph btn-neumorph-accent w-100 py-3 fs-5 font-display fw-bold">
+                            EXECUTE_DEPLOYMENT <i class="bi bi-arrow-up-circle ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <a href="{% url 'Eduverse:teacher_dashboard' %}" class="btn-neumorph py-2 px-4 shadow-sm" style="font-size: 0.85rem;">
+                        ABORT_AND_RETURN
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Form Validation Logic
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

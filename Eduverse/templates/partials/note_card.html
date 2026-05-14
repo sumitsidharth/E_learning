@@ -1,0 +1,50 @@
+{% load static %}
+<div class="card-industrial h-100 p-0 overflow-hidden">
+    <!-- Manufacturing Details -->
+    <div class="screw screw-tl"></div>
+    <div class="screw screw-tr"></div>
+    <div class="vent-group">
+        <div class="vent"></div>
+        <div class="vent"></div>
+        <div class="vent"></div>
+    </div>
+
+    <!-- Image / Placeholder with grayscale effect -->
+    <div class="position-relative overflow-hidden" style="height: 180px;">
+        {% if note.preview_image %}
+            <img src="{{ note.preview_image.url }}" class="w-100 h-100 object-fit-cover transition-all duration-500 hover-grayscale-0" 
+                 alt="{{ note.title }}" style="filter: grayscale(100%);">
+        {% else %}
+            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--muted); box-shadow: var(--shadow-recessed);">
+                <i class="bi bi-file-earmark-medical text-muted" style="font-size: 3rem;"></i>
+            </div>
+        {% endif %}
+        
+        <!-- Price/Free Overlay -->
+        <div class="position-absolute bottom-0 start-0 m-3">
+            {% if note.is_free %}
+                <span class="badge text-mono bg-success shadow-sm px-3 py-2 border-0">FREE_ACCESS</span>
+            {% else %}
+                <span class="badge text-mono bg-accent shadow-sm px-3 py-2 border-0">₹{{ note.price }}</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="p-4 pt-3">
+        <div class="mb-2">
+            <span class="text-mono text-accent fw-bold" style="font-size: 0.65rem;">REF_ID: #{{ note.id|stringformat:"05d" }} // {{ note.subject.name|upper }}</span>
+        </div>
+        <h6 class="fw-bold text-dark mb-2 text-truncate" style="font-family: var(--font-sans);">{{ note.title }}</h6>
+        <p class="text-muted small text-truncate-2 mb-4" style="height: 2.5rem;">{{ note.description }}</p>
+        
+        <div class="d-flex justify-content-between align-items-center mt-auto border-top pt-3" style="border-color: var(--muted) !important;">
+            <div class="d-flex align-items-center">
+                <div class="led led-active me-2" style="width: 6px; height: 6px;"></div>
+                <span class="text-mono text-muted" style="font-size: 0.6rem;">USR: {{ note.teacher.username|default:note.teacher.email|truncatechars:10|upper }}</span>
+            </div>
+            <a href="{% url 'Eduverse:note_detail' note.id %}" class="btn-industrial btn-sm py-1 px-3" style="font-size: 0.7rem;">
+                OPEN_FILE <i class="bi bi-arrow-right-short"></i>
+            </a>
+        </div>
+    </div>
+</div>

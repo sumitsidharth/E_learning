@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row g-5">
+    <!-- Filter Sidebar (Nested Depth Panel) -->
+    <div class="col-lg-3 col-md-4 mb-4">
+        <div class="card-neumorph p-4" style="position: sticky; top: 100px; box-shadow: var(--shadow-extruded-sm); border-radius: 24px;">
+            <div class="d-flex align-items-center mb-4">
+                <div class="icon-well sm me-2" style="width: 35px; height: 35px; margin-bottom: 0; box-shadow: var(--shadow-inset-sm);">
+                    <i class="bi bi-filter-left"></i>
+                </div>
+                <h5 class="fw-black font-display mb-0 small">REFINE_SEARCH</h5>
+            </div>
+            
+            <form method="GET" action="{% url 'Eduverse:notes_list' %}">
+                <!-- Text Search: Recessed Well -->
+                <div class="mb-4 text-start">
+                    <label for="q" class="form-label fw-bold text-muted-neumorph ms-2 small">KEYWORD</label>
+                    <div class="position-relative">
+                        <input type="text" class="input-neumorph ps-5" id="q" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search title...">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                    </div>
+                </div>
+
+                <!-- Subject Multi-Select: Nested Inset Area -->
+                <div class="mb-4 text-start">
+                    <label class="form-label fw-bold text-muted-neumorph ms-2 small">ACADEMIC_FIELDS</label>
+                    <div class="card-neumorph p-3" style="max-height: 250px; overflow-y: auto; box-shadow: var(--shadow-inset-sm); border-radius: 16px; background: var(--bg-neumorph);">
+                        {% for subject in subjects %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="subject" value="{{ subject.id }}" id="sub{{ subject.id }}" 
+                                   {% if subject.id|stringformat:"s" in request.GET.getlist.subject %}checked{% endif %}
+                                   style="box-shadow: var(--shadow-inset-sm);">
+                            <label class="form-check-label small fw-medium text-dark ms-2" for="sub{{ subject.id }}">
+                                {{ subject.name|upper }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Price Filter Toggle -->
+                <div class="mb-4 text-start">
+                    <div class="card-neumorph p-3 d-flex align-items-center justify-content-between" style="box-shadow: var(--shadow-extruded-sm); border-radius: 16px;">
+                        <label class="small fw-bold text-muted-neumorph mb-0" for="price_type">FREE_ONLY</label>
+                        <div class="form-check form-switch p-0 m-0">
+                            <input class="form-check-input m-0" type="checkbox" id="price_type" name="price_type" value="free" {% if request.GET.price_type == 'free' %}checked{% endif %} style="width: 2.5em; height: 1.25em; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sort: Recessed Select -->
+                <div class="mb-4 text-start">
+                    <label for="sort" class="form-label fw-bold text-muted-neumorph ms-2 small">SORT_SEQUENCE</label>
+                    <select class="input-neumorph" id="sort" name="sort" style="cursor: pointer;">
+                        <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>NEWEST_DEPLOYED</option>
+                        <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>PRICE: ASCENDING</option>
+                        <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>PRICE: DESCENDING</option>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-3 pt-2">
+                    <button type="submit" class="btn-neumorph btn-neumorph-accent py-2 fw-bold">APPLY_FILTERS</button>
+                    <a href="{% url 'Eduverse:notes_list' %}" class="btn-neumorph py-2 small text-center text-decoration-none">RESET_ALL</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notes Grid (Tactile Grid) -->
+    <div class="col-lg-9 col-md-8">
+        <div class="row align-items-center mb-5">
+            <div class="col-sm-7">
+                <h2 class="display-6 fw-black font-display tracking-tighter mb-1" style="color: var(--fg-neumorph);">BROWSE_RESOURCES</h2>
+                <p class="text-muted-neumorph fw-bold mb-0">TOTAL_RECORDS: {{ page_obj.paginator.count }}</p>
+            </div>
+            <div class="col-sm-5 text-sm-end mt-3 mt-sm-0">
+                <div class="card-neumorph d-inline-flex px-3 py-2" style="box-shadow: var(--shadow-inset-sm); border-radius: 12px;">
+                    <i class="bi bi-cpu text-accent me-2"></i>
+                    <span class="small fw-bold text-muted-neumorph">FILTER_MODE: ACTIVE</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5">
+            {% for note in notes %}
+            <div class="col-12 col-lg-6 col-xl-4">
+                <div class="card-neumorph p-4 h-100">
+                    <div class="position-relative mb-4 overflow-hidden rounded-4" style="height: 180px; box-shadow: var(--shadow-inset-sm);">
+                        {% if note.preview_image %}
+                            <img src="{{ note.preview_image.url }}" class="w-100 h-100 object-fit-cover opacity-90" alt="{{ note.title }}">
+                        {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-neumorph">
+                                <i class="bi bi-file-earmark-pdf fs-1 opacity-20"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge btn-neumorph px-3 py-2 border-0 shadow-none bg-white text-accent small" style="background: var(--bg-neumorph) !important; box-shadow: var(--shadow-extruded-sm) !important; font-size: 0.7rem;">{{ note.subject.name|upper }}</span>
+                        <span class="fw-black text-dark">₹{{ note.price }}</span>
+                    </div>
+                    <h5 class="fw-bold mb-3 font-display">
+                        <a href="{% url 'Eduverse:note_detail' note.pk %}" class="text-dark text-decoration-none hover-accent">{{ note.title }}</a>
+                    </h5>
+                    <p class="small text-muted-neumorph mb-4 fw-medium" style="display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ note.description }}</p>
+                    
+                    <div class="mt-auto pt-3 border-top border-dark border-opacity-5 d-flex align-items-center justify-content-between">
+                        <span class="small fw-bold text-muted-neumorph">By {{ note.teacher.username|upper }}</span>
+                        <a href="{% url 'Eduverse:note_detail' note.pk %}" class="btn-neumorph p-2" style="border-radius: 12px; box-shadow: var(--shadow-extruded-sm);">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="card-neumorph p-5 d-inline-block">
+                    <div class="icon-well mx-auto mb-4" style="width: 80px; height: 80px;">
+                        <i class="bi bi-search fs-2 opacity-30"></i>
+                    </div>
+                    <h5 class="text-muted-neumorph fw-bold mb-0">NO_DATA_MATCHES_CRITERIA</h5>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Neumorphic Pagination -->
+        {% if is_paginated %}
+        <nav class="mt-5 pt-5 border-top border-white border-opacity-10">
+            <ul class="pagination pagination-neumorph justify-content-center gap-3">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="btn-neumorph px-4 py-2 text-decoration-none" href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}">
+                        <i class="bi bi-arrow-left me-2"></i> PREV_PAGE
+                    </a>
+                </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="btn-neumorph active border-0 px-4 py-2" style="box-shadow: var(--shadow-inset-sm); color: var(--accent-neumorph);">{{ page_obj.number }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="btn-neumorph px-4 py-2 text-decoration-none" href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">
+                        NEXT_PAGE <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .pagination-neumorph .page-item {
+        border: none;
+    }
+    .hover-accent:hover {
+        color: var(--accent-neumorph) !important;
+    }
+</style>
+{% endblock %}

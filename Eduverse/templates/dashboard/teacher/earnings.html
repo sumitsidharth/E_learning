@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row mb-5 align-items-center">
+    <div class="col-md-7">
+        <h2 class="display-6 fw-black font-display tracking-tighter mb-1" style="color: var(--fg-neumorph);">REVENUE_ANALYTICS</h2>
+        <p class="text-muted-neumorph fw-bold">SYSTEM_MODE: FINANCIAL_OVERSIGHT</p>
+    </div>
+    <div class="col-md-5 text-md-end">
+        <div class="card-neumorph d-inline-flex px-5 py-3" style="box-shadow: var(--shadow-inset-sm); border-radius: 20px;">
+            <p class="mb-0 fw-black font-display text-dark" style="font-size: 1.5rem;">Σ_TOTAL: ₹{{ total_earnings }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card-neumorph p-0 overflow-hidden" style="box-shadow: var(--shadow-extruded-sm); border-radius: 24px;">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 bg-transparent">
+                    <thead class="bg-white bg-opacity-5 text-muted-neumorph">
+                        <tr>
+                            <th class="p-4 small fw-black border-0">TRANSACTION_DATE</th>
+                            <th class="p-4 small fw-black border-0">OPERATOR_ID</th>
+                            <th class="p-4 small fw-black border-0">RESOURCE_IDENTIFIER</th>
+                            <th class="p-4 small fw-black border-0 text-end">NET_YIELD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purchase in purchases %}
+                        <tr class="border-white border-opacity-5 align-middle">
+                            <td class="p-4 small fw-bold text-muted-neumorph">{{ purchase.purchased_at|date:"M d, Y H:i"|upper }}</td>
+                            <td class="p-4 small fw-black text-dark">{{ purchase.student.email|upper|truncatechars:20 }}</td>
+                            <td class="p-4 small fw-bold text-accent">{{ purchase.note.title|upper }}</td>
+                            <td class="p-4 small fw-black text-end">₹{{ purchase.amount_paid }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="p-5 text-center">
+                                <p class="text-muted-neumorph fw-bold mb-0">NO_REVENUE_RECORDS_DETECTED</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Neumorphic Pagination -->
+        {% if is_paginated %}
+        <nav class="mt-5 pt-4">
+            <ul class="pagination pagination-neumorph justify-content-center gap-3">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="btn-neumorph px-4 py-2 text-decoration-none" href="?page={{ page_obj.previous_page_number }}">
+                        <i class="bi bi-arrow-left me-2"></i> PREV_CYCLE
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item active">
+                    <span class="btn-neumorph active border-0 px-4 py-2" style="box-shadow: var(--shadow-inset-sm); color: var(--accent-neumorph);">{{ page_obj.number }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="btn-neumorph px-4 py-2 text-decoration-none" href="?page={{ page_obj.next_page_number }}">
+                        NEXT_CYCLE <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

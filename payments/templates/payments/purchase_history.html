@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 text-center text-md-start position-relative">
+        <h1 class="text-bauhaus-sub fw-black text-uppercase mb-2">Purchase History</h1>
+        <div style="width: 60px; height: 8px; background: var(--bauhaus-red);" class="mb-3 mx-auto mx-md-0"></div>
+        <p class="lead fw-bold mb-0">Track your academic investments and download receipts.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        {% if purchases %}
+            <div class="table-responsive bauhaus-card p-0 overflow-hidden">
+                <table class="table mb-0 align-middle">
+                    <thead class="bg-bauhaus-black text-white">
+                        <tr>
+                            <th scope="col" class="py-3 px-4 text-uppercase border-bottom-0">Item</th>
+                            <th scope="col" class="py-3 px-4 text-uppercase border-bottom-0 text-center">Amount</th>
+                            <th scope="col" class="py-3 px-4 text-uppercase border-bottom-0 text-center">Date</th>
+                            <th scope="col" class="py-3 px-4 text-uppercase border-bottom-0 text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purchase in purchases %}
+                        <tr class="border-bottom border-dark border-2 border-opacity-25">
+                            <td class="py-4 px-4 bg-white">
+                                <span class="d-block fw-bold fs-5 mb-1">{{ purchase.note.title }}</span>
+                                <span class="badge bg-light text-dark border border-dark rounded-0 mr-2">{{ purchase.note.subject.name }}</span>
+                                <span class="small text-muted fw-bold">By {{ purchase.note.teacher.email }}</span>
+                            </td>
+                            <td class="py-4 px-4 bg-white text-center">
+                                <span class="fw-bold fs-5 text-bauhaus-blue">₹{{ purchase.amount_paid }}</span>
+                            </td>
+                            <td class="py-4 px-4 bg-white text-center">
+                                <span class="fw-bold">{{ purchase.purchased_at|date:"M d, Y" }}</span>
+                            </td>
+                            <td class="py-4 px-4 bg-white text-end">
+                                <a href="{% url 'Eduverse:note_download' purchase.note.id %}" class="btn-bauhaus btn-bauhaus-yellow rounded-0 btn-sm text-decoration-none py-2 px-3">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav class="mt-5 d-flex justify-content-center">
+                <ul class="pagination gap-2">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link py-2 px-3 fw-bold text-dark border-dark border-2 rounded-0 shadow-sm" href="?page={{ page_obj.previous_page_number }}">
+                            <i class="bi bi-arrow-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link py-2 px-3 fw-bold text-white bg-bauhaus-black border-dark border-2 rounded-0 shadow-sm">{{ page_obj.number }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link py-2 px-3 fw-bold text-dark border-dark border-2 rounded-0 shadow-sm" href="?page={{ page_obj.next_page_number }}">
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+        {% else %}
+            <div class="bauhaus-card text-center p-5 mt-4 border-bauhaus-black border-4 shadow-md bg-white">
+                <div class="icon-box-bauhaus bg-light text-muted mx-auto mb-4 border-2 border-dark" style="width: 80px; height: 80px; font-size: 2.5rem;">
+                    <i class="bi bi-journal-x"></i>
+                </div>
+                <h3 class="text-uppercase fw-black mb-3">No Purchases Yet</h3>
+                <p class="lead fw-bold text-muted mb-4">You haven't invested in any academic materials.</p>
+                <a href="{% url 'Eduverse:notes_list' %}" class="btn-bauhaus btn-bauhaus-red rounded-0 text-decoration-none px-5 py-3">
+                    Start Exploring <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

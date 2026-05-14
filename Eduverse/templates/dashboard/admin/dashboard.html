@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row mb-5 align-items-center">
+    <div class="col-12">
+        <h2 class="display-6 fw-black font-display tracking-tighter mb-1" style="color: var(--fg-neumorph);">PLATFORM_COMMAND_CENTER</h2>
+        <p class="text-muted-neumorph fw-bold">SYSTEM_MODE: FULL_ADMINISTRATIVE_ACCESS</p>
+    </div>
+</div>
+
+<!-- Neumorphic Metric Tiles -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card-neumorph p-4 text-center h-100" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-people-fill text-accent"></i>
+            </div>
+            <h6 class="fw-bold text-muted-neumorph mb-2 small">TOTAL_STUDENTS</h6>
+            <h2 class="display-5 fw-extrabold font-display mb-0 text-dark">{{ total_students }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-neumorph p-4 text-center h-100" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-mortarboard text-danger"></i>
+            </div>
+            <h6 class="fw-bold text-muted-neumorph mb-2 small">TOTAL_INSTRUCTORS</h6>
+            <h2 class="display-5 fw-extrabold font-display mb-0 text-dark">{{ total_teachers }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-neumorph p-4 text-center h-100" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-currency-exchange text-success"></i>
+            </div>
+            <h6 class="fw-bold text-muted-neumorph mb-2 small">NET_REVENUE</h6>
+            <h2 class="display-5 fw-extrabold font-display mb-0 text-dark">₹{{ total_revenue|floatformat:0 }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-neumorph p-4 text-center h-100" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-broadcast"></i>
+            </div>
+            <h6 class="fw-bold text-muted-neumorph mb-2 small">WEEKLY_SIGNUPS</h6>
+            <h2 class="display-5 fw-extrabold font-display mb-0 text-dark">{{ weekly_signups }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Content Distribution + Activity Feed -->
+<div class="row g-5 mb-5">
+    <!-- Content Analytics -->
+    <div class="col-lg-5">
+        <div class="card-neumorph p-4 h-100">
+            <div class="d-flex align-items-center mb-4">
+                <div class="icon-well sm me-3" style="width: 45px; height: 45px; margin-bottom: 0;">
+                    <i class="bi bi-pie-chart-fill" style="color: var(--accent-neumorph);"></i>
+                </div>
+                <h4 class="fw-bold font-display mb-0">CONTENT_INVENTORY</h4>
+            </div>
+            
+            <div class="d-grid gap-4">
+                <div class="card-neumorph p-4 d-flex justify-content-between align-items-center" style="box-shadow: var(--shadow-inset-sm); border-radius: 20px;">
+                    <span class="fw-bold text-muted-neumorph">VERIFIED_RESOURCES</span>
+                    <span class="badge btn-neumorph px-4 py-2 bg-white text-success border-0 shadow-none" style="background: var(--bg-neumorph) !important; box-shadow: var(--shadow-extruded-sm) !important;">{{ published_notes }}</span>
+                </div>
+                <div class="card-neumorph p-4 d-flex justify-content-between align-items-center" style="box-shadow: var(--shadow-inset-sm); border-radius: 20px;">
+                    <span class="fw-bold text-muted-neumorph">PENDING_REVIEW</span>
+                    <span class="badge btn-neumorph px-4 py-2 bg-white text-danger border-0 shadow-none" style="background: var(--bg-neumorph) !important; box-shadow: var(--shadow-extruded-sm) !important;">{{ unpublished_notes }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Transmissions -->
+    <div class="col-lg-7">
+        <div class="card-neumorph p-0 overflow-hidden h-100">
+            <div class="p-4 d-flex align-items-center bg-white bg-opacity-5">
+                <div class="icon-well sm me-3" style="width: 45px; height: 45px; margin-bottom: 0;">
+                    <i class="bi bi-activity-fill" style="color: var(--accent-neumorph);"></i>
+                </div>
+                <h4 class="fw-bold font-display mb-0">LIVE_ACTIVITY_LOG</h4>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 bg-transparent">
+                    <thead class="bg-white bg-opacity-5 text-muted-neumorph">
+                        <tr>
+                            <th class="p-4 small fw-black border-0">TIMESTAMP</th>
+                            <th class="p-4 small fw-black border-0">OPERATOR</th>
+                            <th class="p-4 small fw-black border-0">RESOURCE</th>
+                            <th class="p-4 small fw-black border-0 text-end">YIELD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purchase in recent_purchases %}
+                        <tr class="border-white border-opacity-5 align-middle">
+                            <td class="p-4 small fw-bold text-muted-neumorph">{{ purchase.purchased_at|date:"M d, Y"|upper }}</td>
+                            <td class="p-4 small fw-black text-dark">{{ purchase.student.username|upper }}</td>
+                            <td class="p-4 small fw-bold text-accent">{{ purchase.note.title|upper|truncatechars:20 }}</td>
+                            <td class="p-4 small fw-black text-end">₹{{ purchase.amount_paid }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECURE FINANCIAL MANAGEMENT -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card-neumorph p-0 overflow-hidden">
+            <div class="p-4 d-flex justify-content-between align-items-center bg-danger bg-opacity-5 border-bottom border-white border-opacity-5">
+                <div class="d-flex align-items-center">
+                    <div class="icon-well sm me-3" style="width: 45px; height: 45px; margin-bottom: 0;">
+                        <i class="bi bi-shield-lock-fill text-danger"></i>
+                    </div>
+                    <h4 class="fw-bold font-display mb-0">GATEWAY_MANAGEMENT_REFUNDS</h4>
+                </div>
+                <span class="btn-neumorph px-3 py-1 small fw-bold" style="box-shadow: var(--shadow-inset-sm);">{{ recent_payments|length }} TOTAL_RECORDS</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table mb-0 bg-transparent table-hover">
+                    <thead class="bg-white bg-opacity-5 text-muted-neumorph">
+                        <tr>
+                            <th class="p-4 small fw-black border-0">UID</th>
+                            <th class="p-4 small fw-black border-0">SUBJECT</th>
+                            <th class="p-4 small fw-black border-0">PACKET</th>
+                            <th class="p-4 small fw-black border-0">NET</th>
+                            <th class="p-4 small fw-black border-0">STATUS</th>
+                            <th class="p-4 small fw-black border-0">DATE</th>
+                            <th class="p-4 small fw-black border-0 text-center">INTERFACE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in recent_payments %}
+                        <tr class="border-white border-opacity-5 align-middle">
+                            <td class="p-4 small text-muted-neumorph fw-bold">#{{ payment.id }}</td>
+                            <td class="p-4 small fw-bold text-dark">{{ payment.student.email|truncatechars:15 }}</td>
+                            <td class="p-4 small fw-medium text-accent">{{ payment.note.title|truncatechars:20 }}</td>
+                            <td class="p-4 small fw-black">₹{{ payment.amount }}</td>
+                            <td class="p-4">
+                                <span class="badge rounded-pill px-3 py-2 fw-black small status-badge-{{ payment.status }}" 
+                                      style="background: var(--bg-neumorph); box-shadow: var(--shadow-extruded-sm);">
+                                    {{ payment.status|upper }}
+                                </span>
+                            </td>
+                            <td class="p-4 small text-muted-neumorph fw-bold">{{ payment.created_at|date:"M d, Y" }}</td>
+                            <td class="p-4 text-center">
+                                {% if payment.status == 'completed' %}
+                                <form method="post" action="{% url 'payments:initiate_refund' payment.id %}" onsubmit="return confirm('INITIALIZE_REFUND_SEQUENCE?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-neumorph px-3 py-2 small fw-black text-danger" style="box-shadow: var(--shadow-extruded-sm);">
+                                        VOID_TRANS
+                                    </button>
+                                </form>
+                                {% elif payment.status == 'refunded' %}
+                                    <i class="bi bi-check-circle-fill text-muted-neumorph"></i>
+                                {% else %}
+                                    <i class="bi bi-dash-circle opacity-20"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .status-badge-completed { color: var(--success-neumorph); }
+    .status-badge-refunded { color: var(--muted-neumorph); }
+    .status-badge-failed { color: #ff4757; }
+</style>
+{% endblock %}

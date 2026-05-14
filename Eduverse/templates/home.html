@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="mb-5 py-5 position-relative overflow-hidden">
+    <div class="row align-items-center g-5">
+        <!-- Hero Text Content -->
+        <div class="col-lg-6 text-center text-lg-start z-1">
+            <div class="mb-3 d-inline-flex align-items-center bg-white px-3 py-1 rounded-pill shadow-sm">
+                <span class="led led-active me-2" style="width: 8px; height: 8px;"></span>
+                <span class="text-mono fw-bold" style="font-size: 0.7rem; color: var(--text-muted);">SYSTEM_STATUS: OPERATIONAL</span>
+            </div>
+            <h1 class="display-3 fw-black mb-3 lh-1" style="font-family: var(--font-sans); letter-spacing: -0.04em;">
+                Tactile Learning. <br>
+                <span class="text-accent">Industrial Precision.</span>
+            </h1>
+            <p class="lead mb-5 text-muted fw-medium" style="max-width: 500px;">
+                Access a high-fidelity repository of academic modules, engineered for student success and teacher collaboration.
+            </p>
+            <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                <a href="{% url 'Eduverse:notes_list' %}" class="btn btn-industrial btn-industrial-accent px-5 py-3">
+                    EXPLORE_REPO <i class="bi bi-chevron-right"></i>
+                </a>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'Eduverse:register' %}" class="btn btn-industrial px-5 py-3">
+                        JOIN_CREW
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 3D Device Visualization -->
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="card-industrial p-3" style="border-radius: 24px; box-shadow: var(--shadow-floating);">
+                <!-- Outer Bezel -->
+                <div class="p-2 border border-2 border-dark border-opacity-10 rounded-4 bg-dark shadow-lg">
+                    <!-- Screen -->
+                    <div class="screen-container" style="height: 320px;">
+                        <div class="screen-scanlines"></div>
+                        
+                        <!-- Screen Content (Mock Dashboard) -->
+                        <div class="position-relative z-1 d-flex flex-column h-100">
+                            <div class="d-flex justify-content-between mb-4">
+                                <div class="text-mono text-accent small fw-bold">EDU_CORE // v2.04</div>
+                                <div class="text-mono text-white small opacity-50">SYNC: 100%</div>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex align-items-end gap-2 mb-3">
+                                    <div class="bg-accent" style="height: 40px; width: 4px;"></div>
+                                    <div class="bg-accent opacity-75" style="height: 60px; width: 4px;"></div>
+                                    <div class="bg-accent opacity-50" style="height: 30px; width: 4px;"></div>
+                                    <div class="bg-accent opacity-25" style="height: 50px; width: 4px;"></div>
+                                    <div class="ms-3">
+                                        <h4 class="text-white mb-0 fw-black">98.4%</h4>
+                                        <div class="text-mono text-white opacity-50" style="font-size: 0.6rem;">RETENTION_RATE</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="progress bg-dark mb-2" style="height: 4px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);">
+                                    <div class="progress-bar bg-accent" style="width: 75%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between text-mono text-white opacity-25" style="font-size: 0.5rem;">
+                                    <span>DATA_STREAM_A</span>
+                                    <span>STREAM_B_ACTIVE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hardware Details -->
+                <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                    <div class="d-flex gap-2">
+                        <div class="led led-active" style="background: #22c55e; box-shadow: 0 0 10px #22c55e;"></div>
+                        <div class="led"></div>
+                        <div class="led"></div>
+                    </div>
+                    <div class="text-mono text-muted" style="font-size: 0.6rem;">UNIT_REF: EV-9000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Subjects Category Gallery -->
+<div class="row g-4 mb-5">
+    <div class="col-12 text-center mb-5">
+        <h2 class="fw-black text-uppercase tracking-tighter mb-2">Technical Categories</h2>
+        <p class="text-muted text-mono small">SELECT_MODULE_BY_FIELD_ID</p>
+    </div>
+    {% for subject in subjects %}
+    <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'Eduverse:notes_list' %}?subject={{ subject.id }}" class="text-decoration-none h-100 d-block">
+            <div class="card-industrial h-100 text-center p-4 d-flex flex-column align-items-center justify-content-center">
+                <div class="screw screw-tl"></div>
+                <div class="screw screw-tr"></div>
+                
+                <div class="mb-3 d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 56px; height: 56px;">
+                    {% if subject.icon %}
+                        <img src="{{ subject.icon.url }}" alt="{{ subject.name }}" style="height: 28px;">
+                    {% else %}
+                        <i class="bi bi-box-seam text-accent fs-3"></i>
+                    {% endif %}
+                </div>
+                <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.85rem;">{{ subject.name|upper }}</h6>
+                <span class="text-mono text-muted" style="font-size: 0.6rem;">{{ subject.note_count }}_FILES</span>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Latest Notes Grid -->
+<div class="row g-4 mb-5">
+    <div class="col-12 d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-black text-uppercase tracking-tighter mb-0">Latest Deployments</h2>
+            <p class="text-muted text-mono small mb-0">STREAMS_ACTIVE_NOW</p>
+        </div>
+        <a href="{% url 'Eduverse:notes_list' %}" class="btn-industrial btn-sm py-2 px-4 shadow-sm">
+            VIEW_FULL_REPO <i class="bi bi-terminal ms-2"></i>
+        </a>
+    </div>
+    {% for note in latest_notes %}
+    <div class="col-12 col-md-6 col-lg-4">
+        {% include 'partials/note_card.html' with note=note %}
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-light text-center py-5 border rounded-4 bg-white shadow-sm">
+            <i class="bi bi-search fs-1 text-muted opacity-25 mb-3 d-block"></i>
+            <h5 class="text-muted mb-0">No resources matched the criteria. Check back later!</h5>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Footer Info Banner -->
+<div class="row my-5">
+    <div class="col-12">
+        <div class="card-industrial p-5 text-center bg-white">
+            <div class="screw screw-tl"></div>
+            <div class="screw screw-tr"></div>
+            <div class="screw screw-bl"></div>
+            <div class="screw screw-br"></div>
+            
+            <h3 class="fw-black text-uppercase mb-3">Join the Academic Fleet</h3>
+            <p class="text-muted mb-5 mx-auto" style="max-width: 700px;">Connect with thousands of students and educators in a peer-to-peer knowledge exchange designed for high-performance learning.</p>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'Eduverse:register' %}" class="btn btn-industrial btn-industrial-accent px-5 py-3">
+                    INITIALIZE_REGISTRATION_FLOW
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

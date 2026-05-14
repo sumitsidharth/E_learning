@@ -1,0 +1,240 @@
+/* 
+ * Neumorphism (Soft UI) - Core Design System 
+ * Tactile, calm, and physically grounded. A molded, monochromatic surface experience.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap');
+
+:root {
+    /* Neumorphic Palette (Cool Monochromatic) */
+    --bg-neumorph: #E0E5EC;
+    --fg-neumorph: #3D4852; /* Primary Text (7.5:1 ratio) */
+    --muted-neumorph: #5A6270; /* Muted Text (4.8:1 ratio) - AA Compliant */
+    --accent-neumorph: #6C63FF; /* Soft Violet Accent */
+    --accent-light: #8B84FF;
+    --success-neumorph: #38B2AC; /* Teal */
+    
+    /* Shadow Physics (Standard Dual Opposing Shadows) */
+    --shadow-light: rgba(255, 255, 255, 0.6);
+    --shadow-dark: rgba(163, 177, 198, 0.6);
+    
+    /* Extruded (Standard/Raised) */
+    --shadow-extruded: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light);
+    --shadow-extruded-hover: 12px 12px 20px rgba(163, 177, 198, 0.7), -12px -12px 20px rgba(255, 255, 255, 0.6);
+    --shadow-extruded-sm: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+    
+    /* Inset (Pressed/Wells) */
+    --shadow-inset: inset 6px 6px 10px var(--shadow-dark), inset -6px -6px 10px var(--shadow-light);
+    --shadow-inset-deep: inset 10px 10px 20px rgba(163, 177, 198, 0.7), inset -10px -10px 20px rgba(255, 255, 255, 0.6);
+    --shadow-inset-sm: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+
+    /* Typography */
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    
+    /* Ease Primitives */
+    --ease-soft: cubic-bezier(0.4, 0, 0.2, 1); /* Natural deceleration */
+}
+
+/* Global Reset & Base */
+body {
+    background-color: var(--bg-neumorph);
+    color: var(--fg-neumorph);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+/* Typography Scale */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--fg-neumorph);
+}
+
+.text-muted-neumorph { color: var(--muted-neumorph); }
+.font-display { font-family: var(--font-display); }
+
+/* --- Core Components --- */
+
+/* Buttons (Tactile Pillows) */
+.btn-neumorph {
+    background-color: var(--bg-neumorph);
+    color: var(--fg-neumorph);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 16px; /* rounded-2xl */
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: var(--shadow-extruded);
+    transition: all 300ms var(--ease-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-neumorph:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-extruded-hover);
+    color: var(--accent-neumorph);
+}
+
+.btn-neumorph:active {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-inset-sm);
+}
+
+.btn-neumorph-accent {
+    background-color: var(--accent-neumorph);
+    color: white;
+    box-shadow: 6px 6px 12px rgba(108, 99, 255, 0.3), -4px -4px 10px rgba(255, 255, 255, 0.2);
+}
+
+.btn-neumorph-accent:hover {
+    background-color: var(--accent-light);
+    color: white;
+    box-shadow: 8px 8px 16px rgba(108, 99, 255, 0.4), -6px -6px 12px rgba(255, 255, 255, 0.3);
+}
+
+.btn-neumorph:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--bg-neumorph), 0 0 0 6px var(--accent-neumorph);
+}
+
+/* Cards (Soft Containers) */
+.card-neumorph {
+    background-color: var(--bg-neumorph);
+    border-radius: 32px; /* rounded-[32px] */
+    box-shadow: var(--shadow-extruded);
+    padding: 40px;
+    transition: all 300ms var(--ease-soft);
+    position: relative;
+    border: none;
+}
+
+.card-neumorph:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-extruded-hover);
+}
+
+/* Nested Depth: Icon Wells */
+.icon-well {
+    width: 64px;
+    height: 64px;
+    background-color: var(--bg-neumorph);
+    border-radius: 16px;
+    box-shadow: var(--shadow-inset-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-neumorph);
+    margin-bottom: 24px;
+}
+
+/* Inputs (Recessed Wells) */
+.input-neumorph {
+    background-color: var(--bg-neumorph);
+    border: none;
+    border-radius: 16px;
+    padding: 16px 20px;
+    width: 100%;
+    color: var(--fg-neumorph);
+    box-shadow: var(--shadow-inset);
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: all 300ms var(--ease-soft);
+}
+
+.input-neumorph:focus {
+    outline: none;
+    box-shadow: var(--shadow-inset-deep);
+}
+
+.input-neumorph::placeholder {
+    color: #A0AEC0;
+}
+
+/* --- Layout Decor --- */
+
+/* Floating Soft Circles */
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+.floating-circle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--bg-neumorph);
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.circle-extruded { box-shadow: var(--shadow-extruded); }
+.circle-inset { box-shadow: var(--shadow-inset); }
+
+/* Sticky Header with Blur */
+.header-neumorph {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(224, 229, 236, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mapping Legacy names for smooth migration */
+.btn-industrial, .btn-bauhaus, .btn-neumorph {
+    background-color: var(--bg-neumorph);
+    color: var(--fg-neumorph);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 16px; /* rounded-2xl */
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: var(--shadow-extruded);
+    transition: all 300ms var(--ease-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+}
+
+.card-industrial, .bauhaus-card, .card-neumorph {
+    background-color: var(--bg-neumorph);
+    border-radius: 32px; /* rounded-[32px] */
+    box-shadow: var(--shadow-extruded);
+    padding: 40px;
+    transition: all 300ms var(--ease-soft);
+    position: relative;
+    border: none;
+}
+
+.input-industrial, .input-neumorph {
+    background-color: var(--bg-neumorph);
+    border: none;
+    border-radius: 16px;
+    padding: 16px 20px;
+    width: 100%;
+    color: var(--fg-neumorph);
+    box-shadow: var(--shadow-inset);
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: all 300ms var(--ease-soft);
+}
+
+.led, .screw, .vent-group, .screen-scanlines, .animate-radar { display: none !important; }

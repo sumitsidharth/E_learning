@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-lg-8 col-xl-6">
+        <!-- Main Register Card -->
+        <div class="card-neumorph p-4 p-md-5">
+            <div class="text-center mb-5">
+                <div class="icon-well mx-auto mb-4" style="width: 80px; height: 80px; border-radius: 20px; box-shadow: var(--shadow-inset-sm);">
+                    <i class="bi bi-person-plus-fill fs-2" style="color: var(--accent-neumorph);"></i>
+                </div>
+                <h2 class="display-5 fw-extrabold font-display tracking-tighter mb-2" style="color: var(--fg-neumorph);">INITIALIZE_ACCOUNT</h2>
+                <p class="text-muted-neumorph fw-bold" style="font-size: 0.85rem;">CREATE YOUR ACADEMIC CREDENTIALS</p>
+            </div>
+
+            <form method="post" action="{% url 'Eduverse:register' %}" class="needs-validation" novalidate id="register-form">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="card-neumorph p-3 mb-4 bg-danger bg-opacity-10 border-0" style="box-shadow: var(--shadow-inset-sm);">
+                        {% for error in form.non_field_errors %}
+                            <p class="text-danger fw-bold small mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <!-- Email Address -->
+                    <div class="col-12 text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">EMAIL_ADDRESS_IDENTIFIER</label>
+                        <div class="position-relative">
+                            <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" class="input-neumorph ps-5" placeholder="name@domain.com" required>
+                            <i class="bi bi-envelope position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                        </div>
+                        {% if form.email.errors %}
+                            <div class="ms-2 mt-1 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ form.email.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-12 text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">COMMS_LINK_PHONE</label>
+                        <div class="position-relative">
+                            <input type="tel" name="phone_number" id="id_phone_number" value="{{ form.phone_number.value|default:'' }}" class="input-neumorph ps-5" placeholder="+91 000 000 0000" required>
+                            <i class="bi bi-phone position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                        </div>
+                        {% if form.phone_number.errors %}
+                            <div class="ms-2 mt-1 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ form.phone_number.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="col-12 text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">SYSTEM_ROLE_AUTHORITY</label>
+                        <div class="row g-3">
+                            {% for value, label in form.role.field.choices %}
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="role" id="role_{{ value }}" value="{{ value }}" {% if form.role.value == value or forloop.first %}checked{% endif %}>
+                                <label class="btn btn-neumorph w-100 py-3 d-flex flex-column align-items-center" for="role_{{ value }}">
+                                    <i class="bi bi-{% if value == 'student' %}book{% else %}mortarboard{% endif %} mb-1 fs-4"></i>
+                                    <span class="small fw-bold">{{ label|upper }}</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Password Security -->
+                    <div class="col-12 text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">SECURITY_AUTH_KEY</label>
+                        <div class="position-relative mb-3">
+                            <input type="password" name="password1" id="id_password1" class="input-neumorph ps-5" placeholder="Minimum 8 characters..." required oninput="checkStrength(this.value)">
+                            <i class="bi bi-shield-lock position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="ms-2 mb-3 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ form.password1.errors|join:", " }}</div>
+                        {% endif %}
+                        
+                        <!-- Soft UI Strength Meter -->
+                        <div class="card-neumorph p-3" style="box-shadow: var(--shadow-inset-sm); border-radius: 16px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-bold text-muted-neumorph">STRENGTH_ANALYSIS</span>
+                                <span id="strength-label" class="small fw-black text-muted-neumorph">AWAITING_INPUT</span>
+                            </div>
+                            <div class="rounded-pill overflow-hidden" style="height: 8px; background: rgba(163, 177, 198, 0.2); box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);">
+                                <div id="strength-bar" class="h-100 transition-all duration-500 rounded-pill" style="width: 0%; background: var(--muted-neumorph);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="col-12 text-start">
+                        <label class="form-label fw-bold text-muted-neumorph ms-2 small">REVERIFY_AUTH_KEY</label>
+                        <div class="position-relative">
+                            <input type="password" name="password2" id="id_password2" class="input-neumorph ps-5" placeholder="Repeat key..." required>
+                            <i class="bi bi-key position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50" style="color: var(--fg-neumorph);"></i>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="ms-2 mt-1 text-danger small fw-bold" style="font-size: 0.7rem;">ERR: {{ form.password2.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Action -->
+                    <div class="col-12 mt-5">
+                        <button type="submit" class="btn-neumorph btn-neumorph-accent w-100 py-3 fs-5 font-display fw-bold">
+                            INITIALIZE_DEPLOYMENT <i class="bi bi-arrow-right-circle ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <p class="text-muted-neumorph fw-bold small">EXISTING_USER_DETECTED?</p>
+                    <a href="{% url 'Eduverse:login' %}" class="btn-neumorph py-2 px-4" style="font-size: 0.85rem; box-shadow: var(--shadow-extruded-sm);">
+                        ACCESS_LOGIN_PORTAL
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- System Footer -->
+        <div class="text-center mt-4">
+            <div class="d-inline-flex align-items-center opacity-40">
+                <i class="bi bi-shield-fill-check text-accent me-2"></i>
+                <span class="small fw-bold text-muted-neumorph font-display">STRIPE_GATEWAY_SECURED</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Neumorphic Password Strength Engine
+    function checkStrength(pwd) {
+        const bar = document.getElementById('strength-bar');
+        const label = document.getElementById('strength-label');
+        let score = 0;
+        
+        if (pwd.length >= 8) score++;
+        if (/[A-Z]/.test(pwd)) score++;
+        if (/[0-9]/.test(pwd)) score++;
+        if (/[^A-Za-z0-9]/.test(pwd)) score++;
+        
+        const levels = [
+            { w: '0%',   bg: 'rgba(163, 177, 198, 0.4)',  txt: 'AWAITING_INPUT' },
+            { w: '25%',  bg: '#ff4757',       txt: 'CRITICAL_WEAK' },
+            { w: '50%',  bg: '#ffa502',       txt: 'LEVEL_MODERATE' },
+            { w: '75%',  bg: '#2e86de',       txt: 'SECURE_OPTIMAL' },
+            { w: '100%', bg: '#2ed573',       txt: 'MAX_PROTECTION' },
+        ];
+        
+        const l = levels[score];
+        bar.style.width = l.w;
+        bar.style.background = l.bg;
+        label.textContent = l.txt;
+        label.style.color = score > 0 ? l.bg : 'var(--muted-neumorph)';
+    }
+
+    // Form Validation Logic
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+
+<style>
+    .btn-check:checked + .btn-neumorph {
+        box-shadow: var(--shadow-inset-sm) !important;
+        color: var(--accent-neumorph) !important;
+        transform: translateY(1px);
+    }
+    .hover-bg-light:hover {
+        background: rgba(255,255,255,0.2) !important;
+    }
+</style>
+{% endblock %}

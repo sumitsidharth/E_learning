@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-8 col-lg-6 text-center">
+        <div class="bauhaus-card p-5 bg-white position-relative">
+            <!-- Decorative Elements -->
+            <div class="bauhaus-shape shape-triangle bg-bauhaus-red opacity-50" style="width: 80px; height: 80px; top: -30px; right: -30px; z-index: -1; transform: rotate(45deg);"></div>
+            <div class="bauhaus-shape bg-dark" style="width: 40px; height: 40px; bottom: -10px; left: -10px; z-index: -1;"></div>
+            
+            <div class="mb-4 mt-2">
+                <i class="bi bi-exclamation-triangle-fill text-bauhaus-red" style="font-size: 5rem;"></i>
+            </div>
+            <h2 class="text-bauhaus-display fw-black mb-4 border-bottom border-4 border-dark pb-3 d-inline-block text-bauhaus-red">INVALID LINK</h2>
+            <p class="fs-5 fw-bold text-dark text-opacity-75 mb-5">
+                THE VERIFICATION LINK IS INVALID OR HAS EXPIRED. <br>
+                PLEASE SIGN UP AGAIN OR CONTACT SUPPORT.
+            </p>
+            <div class="d-grid mt-4 mx-auto" style="max-width: 300px;">
+                <a href="{% url 'Eduverse:register' %}" class="btn-bauhaus btn-bauhaus-red px-4 py-3">TRY REGISTERING AGAIN</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

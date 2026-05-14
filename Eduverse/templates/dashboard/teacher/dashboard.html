@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row mb-5 align-items-center">
+    <div class="col-12">
+        <h2 class="display-6 fw-black font-display tracking-tighter mb-1" style="color: var(--fg-neumorph);">TEACHER_DASHBOARD</h2>
+        <p class="text-muted-neumorph fw-bold">SYSTEM_MODE: AUTHOR_PORTAL</p>
+    </div>
+</div>
+
+{% if not user.teacher_profile.is_approved %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card-neumorph p-4 bg-danger bg-opacity-5 border-0" style="box-shadow: var(--shadow-inset-sm); border-radius: 24px;">
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-shield-exclamation text-danger fs-3 me-3"></i>
+                <h4 class="fw-bold mb-0 text-danger font-display">ACCOUNT_PENDING_VERIFICATION</h4>
+            </div>
+            <p class="mb-0 text-muted-neumorph fw-medium">Your profile is currently under manual review. While you can prepare and upload academic packets, they will remain <strong>restricted</strong> from the public repository until the verification sequence is complete.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card-neumorph p-4 text-center" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-file-earmark-medical fs-4"></i>
+            </div>
+            <h5 class="fw-bold text-muted-neumorph mb-2">TOTAL_LOGS</h5>
+            <p class="display-5 fw-extrabold font-display mb-0 text-accent">{{ total_notes }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-neumorph p-4 text-center" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-graph-up-arrow fs-4"></i>
+            </div>
+            <h5 class="fw-bold text-muted-neumorph mb-2">TOTAL_ACQUISITIONS</h5>
+            <p class="display-5 fw-extrabold font-display mb-0 text-success">{{ total_sales }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-neumorph p-4 text-center" style="box-shadow: var(--shadow-extruded-sm);">
+            <div class="icon-well sm mx-auto mb-3" style="box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-wallet2 fs-4"></i>
+            </div>
+            <h5 class="fw-bold text-muted-neumorph mb-2">NET_YIELD</h5>
+            <p class="display-5 fw-extrabold font-display mb-0 text-dark">₹{{ total_earnings }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-12 d-flex flex-wrap gap-4">
+        <a href="{% url 'Eduverse:note_create' %}" class="btn-neumorph btn-neumorph-accent px-5 py-3">
+            <i class="bi bi-plus-circle me-2"></i> UPLOAD_ACADEMIC_PACKET
+        </a>
+        <a href="{% url 'Eduverse:question_create' %}" class="btn-neumorph px-5 py-3">
+            <i class="bi bi-patch-question me-2"></i> DEPLOY_QUESTION
+        </a>
+        <a href="{% url 'Eduverse:teacher_earnings' %}" class="btn-neumorph px-5 py-3">
+            <i class="bi bi-cash-stack me-2"></i> REVENUE_ANALYTICS
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex align-items-center mb-4">
+            <div class="icon-well sm me-3" style="width: 45px; height: 45px; margin-bottom: 0; box-shadow: var(--shadow-inset-sm);">
+                <i class="bi bi-activity" style="color: var(--accent-neumorph);"></i>
+            </div>
+            <h4 class="fw-bold font-display mb-0">RECENT_TRANSACTION_FEED</h4>
+        </div>
+        
+        <div class="card-neumorph p-0 overflow-hidden" style="box-shadow: var(--shadow-inset-sm); border-radius: 24px;">
+            <div class="list-group list-group-flush">
+                {% for purchase in recent_purchases %}
+                <div class="list-group-item bg-transparent p-4 border-white border-opacity-10 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-well sm me-3" style="width: 40px; height: 40px; margin-bottom: 0;">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-bold text-dark">{{ purchase.student.username|default:purchase.student.email|upper }}</p>
+                            <small class="text-muted-neumorph fw-medium">Acquired: <span class="text-accent">{{ purchase.note.title }}</span></small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="fw-black fs-5">+₹{{ purchase.amount_paid }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-5 text-center">
+                    <p class="text-muted-neumorph fw-bold mb-0">NO_LIVE_TRANSACTIONS_DETECTED</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
