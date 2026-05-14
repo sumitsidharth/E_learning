@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+# pyrefly: ignore [missing-import]
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY', default='django-insecure-v8#e$cxxc!+tr0kzak543kwt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=True)
 
-ALLOWED_HOSTS = ['sumitsidharth.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['sumitelearning.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
