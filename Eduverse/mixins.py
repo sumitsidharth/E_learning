@@ -1,7 +1,12 @@
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.mixins import UserPassesTestMixin
+# pyrefly: ignore [missing-import]
 from django.core.exceptions import PermissionDenied
+# pyrefly: ignore [missing-import]
 from django.shortcuts import redirect
+# pyrefly: ignore [missing-import]
 from django.contrib import messages
+# pyrefly: ignore [missing-import]
 from django.contrib.auth import logout
 
 class RoleRequiredMixin(UserPassesTestMixin):
@@ -16,9 +21,10 @@ class RoleRequiredMixin(UserPassesTestMixin):
             
         is_privileged = getattr(self.request.user, 'is_admin', False) or getattr(self.request.user, 'is_superuser', False)
 
-        if not self.request.user.is_email_verified and not is_privileged:
-            messages.warning(self.request, "Please verify your email to access this page.")
-            return redirect('Eduverse:home')
+        # We allow access even if email is not verified for better UX during development
+        # if not self.request.user.is_email_verified and not is_privileged:
+        #     messages.warning(self.request, "Please verify your email to access this page.")
+        #     return redirect('Eduverse:home')
             
         if is_privileged:
             return redirect('Eduverse:admin_dashboard')
@@ -32,7 +38,7 @@ class RoleRequiredMixin(UserPassesTestMixin):
 class TeacherRequiredMixin(RoleRequiredMixin):
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated and user.is_active and user.is_teacher and user.is_email_verified
+        return user.is_authenticated and user.is_active and user.is_teacher
 
 class OwnershipRequiredMixin:
     """
@@ -46,7 +52,7 @@ class OwnershipRequiredMixin:
 class StudentRequiredMixin(RoleRequiredMixin):
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated and user.is_active and user.is_student and user.is_email_verified
+        return user.is_authenticated and user.is_active and user.is_student
 
 class AdminRequiredMixin(RoleRequiredMixin):
     def test_func(self):

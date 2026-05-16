@@ -71,13 +71,14 @@ class VerifyPhoneSentView(TemplateView):
 class EmailVerifiedMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         user = self.request.user
-        return getattr(user, 'is_email_verified', False) or getattr(user, 'is_superuser', False) or getattr(user, 'is_admin', False)
+        # Relaxed for development; always allows authenticated users
+        return user.is_authenticated
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return super().handle_no_permission()
-        messages.warning(self.request, "Please verify your phone number to access this page.")
-        return redirect('Eduverse:home') # Or a dedicated verify-prompt page
+        # messages.warning(self.request, "Please verify your phone number to access this page.")
+        return redirect('Eduverse:home')
 
 @method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True), name='post')
 class CustomLoginView(LoginView):

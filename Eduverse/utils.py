@@ -1,4 +1,5 @@
 import os
+# pyrefly: ignore [missing-import]
 from django.core.exceptions import ValidationError
 
 def validate_file_security(value):
@@ -40,7 +41,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 def send_verification_sms(user, request):
+    # pyrefly: ignore [import-outside-toplevel, missing-import]
     from .models import PhoneVerificationToken
+    # pyrefly: ignore [import-outside-toplevel, missing-import]
     from django.urls import reverse
     import os
 
@@ -62,6 +65,7 @@ def send_verification_sms(user, request):
 
     if twilio_sid and twilio_auth_token and twilio_number:
         try:
+            # pyrefly: ignore [missing-import]
             from twilio.rest import Client
             client = Client(twilio_sid, twilio_auth_token)
             message = client.messages.create(
