@@ -1,25 +1,36 @@
+# pyrefly: ignore [missing-import]
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+# pyrefly: ignore [missing-import]
 from django.contrib.auth import login
 from django.views import View
+# pyrefly: ignore [missing-import]
 from django.views.generic import CreateView, TemplateView, ListView, UpdateView, DeleteView
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.db.models import Sum
 from .forms import UserRegistrationForm
 from .models import Notes, Question, Purchase
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.utils import timezone
+from django.utils import timezone   
 from datetime import timedelta
-from .models import User, Notes, Question, Purchase, Subject
+# pyrefly: ignore [missing-import]
+from .models import User, Notes, Question, Purchase
 from .mixins import TeacherRequiredMixin, OwnershipRequiredMixin, StudentRequiredMixin, AdminRequiredMixin
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
+# pyrefly: ignore [missing-import]
 from django.contrib.sites.shortcuts import get_current_site
+# pyrefly: ignore [missing-import]
 from django.utils.encoding import force_bytes, force_str
+# pyrefly: ignore [missing-import]
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+# pyrefly: ignore [missing-import]
 from django.template.loader import render_to_string
+# pyrefly: ignore [missing-import]
 from django.contrib.auth.tokens import default_token_generator
+# pyrefly: ignore [missing-import]
 from django.core.mail import EmailMessage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import send_verification_sms
@@ -191,7 +202,6 @@ from django.db.models import Q
 from django.http import FileResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, View
-from .models import Subject
 from .mixins import StudentRequiredMixin
 
 class NotesListView(ListView):
@@ -204,15 +214,15 @@ class NotesListView(ListView):
         # Only show published notes from APPROVED teachers
         qs = Notes.objects.filter(is_published=True, teacher__teacher_profile__is_approved=True)
         q = self.request.GET.get('q')
-        subjects = self.request.GET.getlist('subject')
+        subject = self.request.GET.get('subject')
         price_type = self.request.GET.get('price_type')
         teacher = self.request.GET.get('teacher')
         sort = self.request.GET.get('sort')
 
         if q:
             qs = qs.filter(Q(title__icontains=q) | Q(description__icontains=q))
-        if subjects:
-            qs = qs.filter(subject_id__in=subjects)
+        if subject:
+            qs = qs.filter(subject__icontains=subject)
         if price_type == 'free':
             qs = qs.filter(price=0)
         elif price_type == 'paid':
@@ -231,7 +241,10 @@ class NotesListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['subjects'] = Subject.objects.all()
+        # Get distinct subject names from existing notes
+        context['subjects'] = Notes.objects.filter(
+            is_published=True, teacher__teacher_profile__is_approved=True
+        ).values_list('subject', flat=True).distinct()
         return context
 
 class NoteDetailView(DetailView):
@@ -305,13 +318,14 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # All subjects with note counts (filtered by published and approved)
-        context['subjects'] = Subject.objects.annotate(
-            note_count=Count('notes', filter=Q(notes__is_published=True, notes__teacher__teacher_profile__is_approved=True))
-        )
+        # Get distinct subject names with counts from published notes
+        context['subjects'] = Notes.objects.filter(
+            is_published=True,
+            teacher__teacher_profile__is_approved=True
+        ).values('subject').annotate(note_count=Count('id')).order_by('subject')
         # 6 most recently published notes
         context['latest_notes'] = Notes.objects.filter(
-            is_published=True, 
+            is_published=True,
             teacher__teacher_profile__is_approved=True
         ).order_by('-created_at')[:6]
         return context

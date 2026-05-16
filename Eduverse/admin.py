@@ -53,8 +53,8 @@ class SubjectAdmin(admin.ModelAdmin):
 @admin.register(Notes)
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('title', 'teacher', 'subject', 'price', 'is_published', 'created_at')
-    list_filter = ('is_published', 'subject', 'teacher')
-    search_fields = ('title', 'description')
+    list_filter = ('is_published', 'teacher')
+    search_fields = ('title', 'description', 'subject')
     actions = ['make_published', 'make_unpublished']
 
     @admin.action(description="Mark selected notes as published")
@@ -68,8 +68,8 @@ class NotesAdmin(admin.ModelAdmin):
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('title', 'teacher', 'subject', 'is_published', 'created_at')
-    list_filter = ('is_published', 'subject', 'teacher')
-    search_fields = ('title', 'content')
+    list_filter = ('is_published', 'teacher')
+    search_fields = ('title', 'content', 'subject')
 
 @admin.register(Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
